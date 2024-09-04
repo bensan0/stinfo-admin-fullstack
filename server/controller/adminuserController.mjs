@@ -12,8 +12,10 @@ export const AdminUserController = {
                 return
             }
             res.sendWrapped(200, adminuser, '')
+            return
         } catch (error) {
             res.sendWrapped(500, null, error.message)
+            return
         }
     },
 
@@ -25,11 +27,14 @@ export const AdminUserController = {
             if(check){
                 await AdminUserDao.updatePassword(req.body.id, req.body.newPassword)
                 res.sendWrapped(200, null, '')
+                return
             }else{
                 res.sendWrapped(403, null, '舊密碼輸入錯誤')
+                return
             }
         } catch (error) {
             res.sendWrapped(500, null, error.message)
+            return
         }
     }
 }

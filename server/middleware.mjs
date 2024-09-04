@@ -1,5 +1,7 @@
 'use strict';
 
+import { Util } from './util/util.mjs'
+
 /**
  * 統一響應體格式
  * @param {*} req 
@@ -18,10 +20,20 @@ export const responseWrapper = (req, res, next) => {
 };
 
 export const authLogin = (req, res, next) => {
-  if (req.session && req.session.admin) {
-    return next()
+  if (req.path === '/login') {
+    next()
+  }
+
+  if (req.header('AuthToken')) {
+    let check = Util.checkToken(req.header('AuthToken'))
+    if (check) {
+      next()
+    } else {
+      res.sendWrapped(403, null, 'Token expired')
+      return
+    }
   } else {
     res.sendWrapped(403, null, 'Not yet login')
-    return res.end()
+    return
   }
 }

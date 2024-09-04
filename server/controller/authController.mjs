@@ -14,8 +14,10 @@ export const AuthController = {
         let check = Util.checkPassword(req.body.password, admin.password, admin.salt)
         if(check){
             res.sendWrapped(200, Util.genToken(admin.id, admin.username), '')
+            return
         }else{
             res.sendWrapped(403, null, 'password wrong')
+            return
         }
     }
 }

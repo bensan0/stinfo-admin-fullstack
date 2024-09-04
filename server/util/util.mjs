@@ -28,9 +28,25 @@ export const Util = {
     genToken: (id, username) => {
         const payload = {
             id: id,
-            username: username 
+            username: username
         }
 
-        return jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: 86400})
+        return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 86400 })
+    },
+
+    checkToken: (token) => {
+        try {
+            const secret = process.env.JWT_SECRET
+            const decoded = jwt.verify(token, secret);
+            return true
+        } catch (error) {
+            if (error.name === 'TokenExpiredError') {
+                console.log('Token已过期');
+                return false;
+            } else {
+                console.error('Token解析错误:', error);
+                return false;
+            }
+        }
     }
 }
