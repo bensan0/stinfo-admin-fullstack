@@ -1,12 +1,12 @@
 'use strict'
 
 import { Router } from 'express'
-import * as adminuserController from '../controller/adminuserController.mjs'
+import { AdminUserController } from '../controller/adminuserController.mjs'
 
 const router = Router();
 
-router.get('/info/:id', adminuserController.getInfo)
+router.get('/me', AdminUserController.getInfo)
 
-router.post('/reset-password', adminuserController.resetPassword)
+router.post('/change-password', AdminUserController.changePassword)
 
 export default router;

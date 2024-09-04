@@ -1,6 +1,7 @@
 "use strict";
 
 import PlatUser from "../model/platuser.mjs";
+import { Util } from '../util/util.mjs'
 import strRandom from 'string-random'
 import crypto from 'crypto'
 
@@ -17,20 +18,18 @@ export const userDao = {
 
     // 重置用戶密碼
     resetPassword: async (id) => {
-        let newSalt = strRandom(16)
-        let newPass = strRandom()
-        const md5 = crypto.createHash('md5')
+        let result = Util.genPassword()
         await PlatUser.update(
             {
-                salt: newSalt,
-                password: md5.update(newPass + newSalt).digest('hex')
+                salt: result.salt,
+                password: result.hashedPass
             },
             {
                 where: {
                     id: id
                 }
             })
-        return newPass
+        return result.rawPass
     }
 }
 

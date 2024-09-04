@@ -5,7 +5,7 @@ import { UserController } from '../controller/userController.mjs'
 
 const router = Router();
 
-router.get('/info/:id', UserController.getInfo)
+router.get('/info', UserController.getInfo)
 
 router.post('/reset-password', UserController.resetPassword)
 

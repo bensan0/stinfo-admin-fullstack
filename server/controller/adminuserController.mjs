@@ -1,12 +1,35 @@
 'use strict';
 
-import adminUserDao from "../dao/adminUserDao.mjs";
+import { AdminUserDao } from "../dao/adminUserDao.mjs";
 
-export const getInfo = async (req, res, next) => {
-    try {
-        let result = await adminUserDao.findById(req.params.id)
-        res.sendWrapped(200, result, null)
-    } catch (error) {
-        res.sendWrapped(500, null, error.message)
+export const AdminUserController = {
+
+    getInfo: async (req, res, next) => {
+        try {
+            const adminuser = await AdminUserDao.findById(req.query.id)
+            if(adminuser === null){
+                res.sendWrapped(404, null, 'admin not found')
+                return
+            }
+            res.sendWrapped(200, adminuser, '')
+        } catch (error) {
+            res.sendWrapped(500, null, error.message)
+        }
+    },
+
+    changePassword: async (req, res, next) => {
+        try {
+            //核對密碼
+            const check = await AdminUserDao.comparePassword(req.body.id, req.body.oldPassword)
+            //變更密碼
+            if(check){
+                await AdminUserDao.updatePassword(req.body.id, req.body.newPassword)
+                res.sendWrapped(200, null, '')
+            }else{
+                res.sendWrapped(403, null, '舊密碼輸入錯誤')
+            }
+        } catch (error) {
+            res.sendWrapped(500, null, error.message)
+        }
     }
 }
