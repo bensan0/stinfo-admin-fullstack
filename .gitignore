@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 prod.env
+prod.mjs
 
 # Editor directories and files
 .vscode/*
