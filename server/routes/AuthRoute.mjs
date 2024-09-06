@@ -7,4 +7,6 @@ const router = Router()
 
 router.post('/login', AuthController.login)
 
+router.post('/checkLogin', AuthController.checkLogin)
+
 export default router

@@ -1,5 +1,6 @@
 import AdminUser from '../model/adminuser.mjs';
 import crypto from 'crypto'
+import { Util } from '../util/util.mjs'
 
 export const AdminUserDao = {
   // 創建新管理員用戶
@@ -9,7 +10,9 @@ export const AdminUserDao = {
 
   // 根據 ID 查找管理員用戶
   findById: async (id) => {
-    return await AdminUser.findByPk(id);
+    return await AdminUser.findByPk(id, {
+      attributes: ['id', 'username', 'createdAt']
+    });
   },
 
   // 根據用戶名查找管理員用戶
@@ -18,23 +21,24 @@ export const AdminUserDao = {
   },
 
   // 核對密碼
-  comparePassword: async (id, password) =>{
-    let adminuser = await findById(id, {
+  comparePassword: async (id, password) => {
+    console.log('dao核對密碼!!!')
+    let adminuser = await AdminUser.findByPk(id, {
       attributes: ['password', 'salt']
     })
-
-    if(adminuser.password !== crypto.createHash('md5').update(adminuser.password + adminuser.salt).digest('hex')){
+    console.log('dao admin=' + JSON.stringify(adminuser))
+    if (adminuser.password !== crypto.createHash('md5').update(password + adminuser.salt).digest('hex')) {
       return false
-    }else{
+    } else {
       return true
-    } 
+    }
   },
 
   // 更新管理員密碼
   updatePassword: async (id, password) => {
-    const user = await AdminUser.findByPk(id);
-    if (user !== null) {
-      return await user.update({ password: password }, {
+    const adminuser = await AdminUser.findByPk(id);
+    if (adminuser !== null) {
+      return await adminuser.update({ password: Util.hashPassword(adminuser.salt, password) }, {
         where: {
           id: id
         }
@@ -46,7 +50,7 @@ export const AdminUserDao = {
   // 刪除管理員用戶
   delete: async (id) => {
     const user = await AdminUser.destroy({
-      where:{
+      where: {
         id: id
       }
     });

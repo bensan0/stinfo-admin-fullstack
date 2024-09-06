@@ -1,18 +1,47 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+import { checkLogin } from '@/utils/AuthUtils';
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: () => import('../views/Home.vue')
+    name: 'Main',
+    component: () => import('@/views/MainPage.vue')
   },
-  // 其他路由...
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/views/LoginPage.vue')
+  },
+  {
+    path: '/user',
+    name: 'UserManagement',
+    component: ()=> import('@/views/UserManaPage.vue')
+  },
+  {
+    path: '/me',
+    name: 'Me',
+    component: ()=> import('@/views/MePage.vue')
+  }
+
 ]
 
 const router = createRouter({
   history: createWebHistory(),
   routes
 })
+
+router.beforeEach(async (to) => {
+  try {
+    if (to.name !== 'Login' && to.name !== 'Error') {
+      const isLoggedIn = await checkLogin();
+      if (!isLoggedIn) {
+        return { name: 'Login' };
+      }
+    }
+  } catch (error) {
+    console.error('Navigation guard error:', error);
+    return { name: 'Error', params: { message: '服務暫時不可用，請稍後再試。' } };
+  }
+});
 
 export default router

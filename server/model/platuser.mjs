@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../database.mjs';
+import { sequelize } from '../database.mjs';
 
 const PlatUser = sequelize.define('PlatUser', {
     id: {
@@ -23,9 +23,18 @@ const PlatUser = sequelize.define('PlatUser', {
     status: {
       type: DataTypes.TINYINT,
       allowNull: false
+    },
+    created_at: {
+      type: DataTypes.BIGINT,
+      allowNull: false
+    },
+    updated_at: {
+      type: DataTypes.BIGINT,
+      allowNull: false
     }
   }, {
     tableName: 'plat_user',
+    timestamps: false
   });
   
   export default PlatUser;

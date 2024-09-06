@@ -3,6 +3,7 @@
 import crypto from 'crypto'
 import strRandom from 'string-random'
 import jwt from 'jsonwebtoken'
+import { json } from 'express'
 
 export const Util = {
     genPassword: () => {
@@ -17,6 +18,11 @@ export const Util = {
             rawPass: rawPass,
             hashedPass: hashedPass
         }
+    },
+
+    hashPassword: (salt, password) =>{
+        const md5 = crypto.createHash('md5')
+        return md5.update(password + salt).digest('hex')
     },
 
     checkPassword: (input, password, salt) => {
@@ -41,10 +47,10 @@ export const Util = {
             return true
         } catch (error) {
             if (error.name === 'TokenExpiredError') {
-                console.log('Token已过期');
+                console.log('Token過期');
                 return false;
             } else {
-                console.error('Token解析错误:', error);
+                console.error('Token解析錯誤:', error);
                 return false;
             }
         }

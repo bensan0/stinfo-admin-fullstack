@@ -4,14 +4,16 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 9998",
     "build": "vite build",
     "preview": "vite preview",
-    "serve": "NODE_ENV=dev nodemon ./server/server.mjs",
-    "start": "node ./server/server.mjs"
+    "start:dev": "NODE_ENV=dev nodemon ./server/server.mjs",
+    "start:prod": "node ./server/server.mjs",
+    "dev:all": "concurrently \"npm run start:dev\" \"npm run dev\""
   },
   "dependencies": {
     "axios": "^1.7.5",
+    "concurrently": "^8.2.2",
     "cors": "^2.8.5",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",

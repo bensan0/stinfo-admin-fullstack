@@ -11,29 +11,29 @@ import { Util } from './util/util.mjs'
 export const responseWrapper = (req, res, next) => {
   res.sendWrapped = (statusCode, data, message) => {
     res.status(200).json({
-      status: statusCode.toString(),
+      status: statusCode,
       data: data || null,
       msg: message || null
     });
   };
-  next();
+  return next();
 };
 
 export const authLogin = (req, res, next) => {
-  if (req.path === '/login') {
-    next()
+  if (req.path === '/auth/login' || req.path === '/auth/checkLogin') {
+    console.log('middle攔截, 去login')
+    return next()
   }
 
   if (req.header('AuthToken')) {
+    console.log('middle攔截, 檢查authtoken')
     let check = Util.checkToken(req.header('AuthToken'))
     if (check) {
-      next()
+      return next()
     } else {
-      res.sendWrapped(403, null, 'Token expired')
-      return
+      return res.sendWrapped('401', null, 'Token expired')
     }
   } else {
-    res.sendWrapped(403, null, 'Not yet login')
-    return
+    return res.sendWrapped('401', null, 'Not yet login')
   }
 }
